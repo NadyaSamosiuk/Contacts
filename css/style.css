@@ -9,6 +9,9 @@ body{
     background-position: left;
     background-size: cover;
     font-family: 'Roboto', sans-serif;
+    display: flex;
+    height: 100%;
+    align-items: center;
 }
 
 input{
@@ -28,6 +31,7 @@ input{
     padding:50px 20px;
     margin: 0 auto;
     display: flex;
+    height: 600px;
 }
 .contacts__form{
     display: flex;
@@ -46,28 +50,28 @@ input{
     font-family: 'Fontawesome';
     padding-right: 10px;
     padding-left: 5px;
-    color: rgb(10, 70, 57);
+    color: rgb(62, 77, 73);
 }
 .email__title::before{
     content:'\f199';
     font-family: 'Fontawesome';
     padding-right: 10px;
     padding-left: 5px;
-    color: rgb(10, 70, 57);
+    color: rgb(62, 77, 73);
 }
 .adres__title::before{
     content:'\f015';
     font-family: 'Fontawesome';
     padding-right: 10px;
     padding-left: 5px;
-    color: rgb(10, 70, 57);
+    color: rgb(62, 77, 73);
 }
 .phone__title::before{
     content:'\f098';
     font-family: 'Fontawesome';
     padding-right: 10px;
     padding-left: 5px;
-    color: rgb(10, 70, 57);
+    color: rgb(62, 77, 73);
 }
 .phone__input{
     margin-bottom: 40px;
@@ -75,13 +79,27 @@ input{
 .btn{
     font-size: 20px;
     width: 140px;
+    height: 50px;
     margin: 0 auto;
     padding: 10px;
     border-radius: 10px;
     cursor: pointer;
     background-color: rgb(122, 243, 95);
     box-shadow: inset 0 0 10px #0a6937f1;
-    border: 1px solid #01421c;
+    border: 2px solid #3d3f3ece;
+    background-image: url('../image/send.png');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.btn_edit{
+    background-image: url('../image/edit.png');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.btn_remove{
+    background-image: url('../image/bin.png');
+    background-repeat: no-repeat;
+    background-position: center;
 }
 .btn_edit:hover,
 .btn_remove:hover,
@@ -90,8 +108,7 @@ input{
     box-shadow: inset 0 0 10px #0b5242;
 }
 .contacts__list{
-    width: 900px;
-    height: 550px;
+    width: 900px; 
     background-color: rgb(168, 233, 219);
     padding: 15px;
     display: flex;
@@ -123,13 +140,11 @@ input{
     overflow: auto;
 
 }
-.list::before{
-    content:'\f2c3';
-    font-family: 'Fontawesome';
-    padding-left: 65px; 
-    padding-bottom: 20px;
-    font-size: 35px;
-    color: rgb(15, 53, 45);
+.img{
+    width: 50px;
+    height: 50px;
+    background-image: url('../image/account.png');
+    margin: 0 auto;
 }
 .btn_edit,
 .btn_remove{
@@ -140,7 +155,7 @@ input{
     cursor: pointer;
     background-color: rgb(122, 243, 95);
     box-shadow:inset 0 0 10px #046431f1;
-    border: 2px solid #047c36;
+    border: 2px solid #2d3835;
     border-radius: 10px;
 }
 .btn_remove{

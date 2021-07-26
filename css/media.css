@@ -2,13 +2,14 @@
     .contacts{
         flex-direction: column;
         align-items: center;
+        height: 100%;
     }
     .contacts__form{
         margin-right: 0;
     }
     .contacts__list{
         width: 90%;
-        height: 100vh;
+        height: 400px;
         margin-top: 40px;        
     }
 }

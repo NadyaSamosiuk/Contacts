@@ -41,7 +41,7 @@ class Contacts{
         this.data.push(user);
     }
     
-    edit(id,data){
+    edit(id, data){
         let user = this.data.filter(user => {
             return +user.data.id == +id;
         });
@@ -90,41 +90,45 @@ class ContactsApp extends Contacts{
        contactsForm.appendChild(contactsNameTitle);
        contactsNameTitle.innerHTML='Имя'
 
-       const contactsNameInput = document.createElement('input');
-       contactsNameInput.classList.add('name__input')
-       contactsForm.appendChild(contactsNameInput);
+       this.contactsNameInput = document.createElement('input');
+       this.contactsNameInput.classList.add('name__input')
+       this.contactsNameInput.setAttribute('placeholder', 'Иван');
+       contactsForm.appendChild(this.contactsNameInput);
        
        const contactsEmailTitle = document.createElement('p');
        contactsEmailTitle.classList.add('email__title')
        contactsForm.appendChild(contactsEmailTitle);
        contactsEmailTitle.innerHTML='Электронная почта'
 
-       const contactsEmailInput = document.createElement('input');
-       contactsEmailInput.classList.add('email__input')
-       contactsForm.appendChild(contactsEmailInput);
+       this.contactsEmailInput = document.createElement('input');
+       this.contactsEmailInput.classList.add('email__input')
+       this.contactsEmailInput.setAttribute('placeholder', 'Ivan@gmail.com');
+       contactsForm.appendChild(this.contactsEmailInput);
 
        const contactsAdresTitle = document.createElement('p');
        contactsAdresTitle.classList.add('adres__title')
        contactsForm.appendChild(contactsAdresTitle);
        contactsAdresTitle.innerHTML='Адрес'
 
-       const contactsAdresInput = document.createElement('input');
-       contactsAdresInput.classList.add('adres__input')
-       contactsForm.appendChild(contactsAdresInput);
+       this.contactsAdresInput = document.createElement('input');
+       this.contactsAdresInput.classList.add('adres__input')
+       this.contactsAdresInput.setAttribute('placeholder', 'г.Минск ул.Могилевская, д.5');
+       contactsForm.appendChild(this.contactsAdresInput);
 
        const contactsPhoneTitle = document.createElement('p');
        contactsPhoneTitle.classList.add('phone__title')
-       contactsForm.appendChild(contactsPhoneTitle);
+       contactsForm.appendChild(contactsPhoneTitle); 
        contactsPhoneTitle.innerHTML='Номер телефона'
 
-       const contactsPhoneInput = document.createElement('input');
-       contactsPhoneInput.classList.add('phone__input')
-       contactsForm.appendChild(contactsPhoneInput);
+       this.contactsPhoneInput = document.createElement('input');
+       this.contactsPhoneInput.classList.add('phone__input')
+       this.contactsPhoneInput.setAttribute('placeholder', '+375 29 455 32 43')
+       contactsForm.appendChild(this.contactsPhoneInput);
     
        const contactsBtn = document.createElement('button');
        contactsBtn.classList.add('btn')
        contactsForm.appendChild(contactsBtn);
-       contactsBtn.innerHTML="Создать"
+       contactsBtn.innerHTML=""
 
        const btnClik = document.querySelector('.btn')
      
@@ -148,17 +152,24 @@ class ContactsApp extends Contacts{
             ul.classList.add('list');
             this.contactsElem.appendChild(ul);
 
+            const img = document.createElement('div');
+            img.classList.add('img');
+            ul.appendChild(img);
+
             const buttonEdit = document.createElement('button')
             buttonEdit.classList.add('btn_edit')
+            buttonEdit.innerHTML=' ';
             this.contactsElem.appendChild(buttonEdit)
-            buttonEdit.innerHTML='Изменить'
-            
+                       
             buttonEdit.setAttribute('id', user.data.id)
 
             const btnEdit = document.querySelector(`.btn_edit[id="${user.data.id}"]`)
-
+                    
             btnEdit.addEventListener('click', event =>{ 
                 let id = event.target.id;
+
+                if (!id) return;
+
                 this.onEdit(id);     
             });
            
@@ -166,7 +177,7 @@ class ContactsApp extends Contacts{
             const buttonRemove = document.createElement('button')
             buttonRemove.classList.add('btn_remove')
             this.contactsElem.appendChild(buttonRemove)
-            buttonRemove.innerHTML='Удалить'
+            buttonRemove.innerHTML=' ';
  
             buttonRemove.setAttribute('id', user.data.id)
 
@@ -174,6 +185,9 @@ class ContactsApp extends Contacts{
             
             btnRemove.addEventListener('click', event =>{ 
                 let id = event.target.id;
+
+                if (!id) return;
+
                 this.onRemove(id);
             })    
           
@@ -202,18 +216,46 @@ class ContactsApp extends Contacts{
         })  
     }
 
+    setStorage(){
+        localStorage.setItem('this.data', JSON.stringify(this.data));
+
+        this.getStorage()
+    }
+
+   getStorage(){
+
+        let localData = localStorage.getItem('this.data');
+        
+        if (localData.length > 0) this.data = JSON.parse(localData)
+        console.log(this.data)    
+    }
+
     onAdd(event){           
         let name = document.querySelector('.name__input'),
             email = document.querySelector('.email__input'),
             adres = document.querySelector('.adres__input'),
             phone = document.querySelector('.phone__input');
-               
-        this.add({
+
+        if (this.contactsNameInput.value.length == 0) return;
+        if (this.contactsEmailInput.value.length == 0) return;
+        if (this.contactsPhoneInput.value.length == 0) return; 
+            
+        const data = {
             name: name.value,
             email: email.value,
             adres: adres.value,
             phone: phone.value,
-        });
+        };
+                         
+        if(!this.contactsNameInput.dataset.action || ! this.contactsNameInput.dataset.id){
+          this.add(data)
+        }else{
+            this.edit(this.contactsNameInput.dataset.id, data);
+            this.contactsNameInput.dataset.action='';
+            this.contactsNameInput.dataset.id='';
+        }
+
+       // this.setStorage();
 
        name.value = "";
        email.value="";
@@ -225,17 +267,23 @@ class ContactsApp extends Contacts{
 
     onRemove(id){
         this.remove(id) 
-              
+            
         this.updateList()
     }
 
     onEdit(id){
-        this.edit(id,{
-            name: prompt('Введите новое имя'),
-            email:prompt('Введите новый email'),
-            adres: prompt('Введите новый адрес'),
-            phone: prompt('Введите новый номер телефона'),
+        //создаем переменную и ищем тот обьект this.data который соответствует нашему Id
+        const user = this.data.find(user =>{
+            return user.data.id == id;
         });
+
+        this.contactsNameInput.value = user.data.name;
+        this.contactsEmailInput.value = user.data.email;
+        this.contactsAdresInput.value = user.data.adres;
+        this.contactsPhoneInput.value = user.data.phone;
+
+        this.contactsNameInput.dataset.action = 'edit';
+        this.contactsNameInput.dataset.id = id;
         
         this.updateList()
     }
