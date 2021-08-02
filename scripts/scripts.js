@@ -68,11 +68,36 @@ class ContactsApp extends Contacts{
 
     constructor(){
         super();
-
         this.init();
     }
+   
+    getData = function getRequest(){
+        let url = 'https://jsonplaceholder.typicode.com/users';
+        fetch(url)
+        .then((response)=>response.json())
+        .then((apiData)=>{
+            let arrApiData = [];
+            apiData.forEach(apiItem =>{
+                arrApiData.push(new User ({
+                    id: apiItem.id,
+                    name: apiItem.name,
+                    email: apiItem.email,
+                    adres: `${apiItem.address.street} ${apiItem.address.suite} ${apiItem.address.city}`,
+                    phone: apiItem.phone
+                }))
+            })
 
-    init(){
+            this.data = [...arrApiData]
+            this.setStorage()
+            console.log('********')
+            console.log(arrApiData)
+           
+            this.updateList()
+        })
+            
+    };
+
+    init(){     
         const contactsApp = document.createElement('div');
         contactsApp.classList.add('contacts');
         document.body.appendChild(contactsApp)
@@ -135,9 +160,25 @@ class ContactsApp extends Contacts{
        btnClik.addEventListener('click', event =>{        
             this.onAdd(event);
         });
+     
+        //Когда сохраняем объект в localStorage он теряет свои методы
+        //Пересаздоем наш объект
+        let arrData= JSON.parse(localStorage.getItem('this.data'))||[]
+        if(arrData.length > 0){
+            let newArr = []
+
+            arrData.forEach((itemData)=>{
+                newArr.push(new User(itemData.data))
+                this.data = [...newArr]           
+                this.updateList()
+            })
+        }else{
+            this.getData()
+        }
     }
 
     updateList(){
+        this.setStorage()
         
         this.contactsList.innerHTML = '';
           
@@ -172,7 +213,7 @@ class ContactsApp extends Contacts{
 
                 this.onEdit(id);     
             });
-           
+            
 
             const buttonRemove = document.createElement('button')
             buttonRemove.classList.add('btn_remove')
@@ -193,9 +234,9 @@ class ContactsApp extends Contacts{
           
             const li1 = document.createElement('li')
             li1.classList.add('list__item');
-            
+            li1.classList.add('title');
 
-           const li2 = document.createElement('li')
+            const li2 = document.createElement('li')
             li2.classList.add('list__item');
 
             const li3 = document.createElement('li')
@@ -218,17 +259,17 @@ class ContactsApp extends Contacts{
 
     setStorage(){
         localStorage.setItem('this.data', JSON.stringify(this.data));
-
-        this.getStorage()
+        //this.storageExpiration()
     }
 
-   getStorage(){
-
-        let localData = localStorage.getItem('this.data');
-        
-        if (localData.length > 0) this.data = JSON.parse(localData)
-        console.log(this.data)    
+   storageExpiration(){
+        setInterval(() => {
+            localStorage.clear(); // Чтоб очистить весь localStorage
+            console.log('hello')
+            this.getData()
+        }, 15000);
     }
+    
 
     onAdd(event){           
         let name = document.querySelector('.name__input'),
@@ -255,14 +296,12 @@ class ContactsApp extends Contacts{
             this.contactsNameInput.dataset.id='';
         }
 
-       // this.setStorage();
+        this.updateList();
 
-       name.value = "";
-       email.value="";
-       adres.value="";
-       phone.value="";
-
-       this.updateList();
+        name.value = "";
+        email.value="";
+        adres.value="";
+        phone.value="";
     }
 
     onRemove(id){

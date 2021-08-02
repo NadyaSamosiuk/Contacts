@@ -13,6 +13,21 @@
         margin-top: 40px;        
     }
 }
+@media (max-width: 425px){
+    .btn_edit,
+    .btn_remove{
+        margin-left: 30px;
+        height: 30px;
+        width: 80px;
+    }
+    .contacts__item{
+        width: 280px;
+        height: 260px;
+    }
+    .list{
+        height: 200px ;
+    }
+}
 @media (max-width: 408px){
     .contacts__form{
         width: 90%;
